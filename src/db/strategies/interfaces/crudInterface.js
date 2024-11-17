@@ -14,6 +14,10 @@ class CrudInterface {
     delete(id) {
         throw new NotImplementedException()
     }
+
+    isConnected() {
+        throw new NotImplementedException()
+    }
 }
 
 module.exports = CrudInterface;
