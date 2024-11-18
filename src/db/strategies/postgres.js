@@ -6,7 +6,6 @@ class Postgres extends CrudInterface {
         super()
         this._driver = null
         this._employees = null
-        this._connect()
     }
 
     async isConnected() {
@@ -19,12 +18,13 @@ class Postgres extends CrudInterface {
         }
     }
    
-    create(item) {
-        console.log("item was saved in postgres")
+    async create(item) {
+        const { dataValues } = await this._employees.create(item)
+        return dataValues
     }
 
     async defineModel() {
-        this._employees = driver.define('employee', {
+        this._employees = this._driver.define('employee', {
             id: {
                 type: Sequelize.INTEGER,
                 required: true,
@@ -45,10 +45,10 @@ class Postgres extends CrudInterface {
             timestamps: false,
         })
     
-        await Employees.sync()
+        await this._employees.sync()
     }
 
-    _connect() {
+    async connect() {
         this._driver = new Sequelize(
             'pizzeria',
             'user',
@@ -59,6 +59,7 @@ class Postgres extends CrudInterface {
                 quoteIdentifiers: false,
             }
         )
+        await this.defineModel()
     }
 }
 
