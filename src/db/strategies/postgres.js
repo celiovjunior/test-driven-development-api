@@ -17,11 +17,6 @@ class Postgres extends CrudInterface {
             return false;
         }
     }
-   
-    async create(item) {
-        const { dataValues } = await this._employees.create(item)
-        return dataValues
-    }
 
     async defineModel() {
         this._employees = this._driver.define('employee', {
@@ -60,6 +55,25 @@ class Postgres extends CrudInterface {
             }
         )
         await this.defineModel()
+    }
+   
+    async create(item) {
+        const { dataValues } = await this._employees.create(item)
+        return dataValues
+    }
+
+    async update(id, item) {
+        const result = await this._employees.update(item, { where: { id: id } })
+        return result
+    }
+
+    async read(item = {}) {
+        return this._employees.findAll({ where: item,  raw: true })
+    }
+
+    async delete(id) {
+        const query = id ? { id } : {}
+        return this._employees.destroy({ where: query })
     }
 }
 
