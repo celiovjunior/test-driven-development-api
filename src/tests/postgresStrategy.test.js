@@ -1,15 +1,19 @@
 const assert = require('assert')
 const ContextStrategy = require('../db/strategies/base/contextStrategy')
 const Postgres = require('../db/strategies/postgres')
+const { EmployeeSchema } = require('../schemas/employeeSchema')
 
-const context = new ContextStrategy(new Postgres())
 const MOCK_EMPLOYEE_REGISTER = {name: 'pieter', role: 'bartender'}
 const MOCK_EMPLOYEE_UPDATE = {name: 'joseph', role: 'waiter'}
+let context = {}
 
 describe('Postgres Strategy', function() {
     this.timeout(Infinity)
     this.beforeAll(async function() {
-        await context.connect()
+        const connection = await Postgres.connect()
+        const model = await Postgres.defineModel(connection, EmployeeSchema)
+        
+        context = new ContextStrategy(new Postgres(connection, model))
         await context.delete()
         await context.create(MOCK_EMPLOYEE_UPDATE)
     })
