@@ -47,7 +47,7 @@ class Postgres extends CrudInterface {
 
     static async connect() {
         const connection = new Sequelize(
-            'pizzeria',
+            'company',
             'user',
             'password',
             {
